@@ -1,5 +1,7 @@
 ## Stock Market Anomaly Detection
 
+Detect unusual market days and stock days using only daily price and volume data. “Unusual” means very large moves or spikes or dip, unusually high volume, or unusually wide ranges compared to recent history. No labels, no news, no complex models.
+
 ## Project Structure
 
 ```
