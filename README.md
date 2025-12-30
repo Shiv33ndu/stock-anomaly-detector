@@ -121,7 +121,8 @@ Implementation uses `pandas.Series.pct_change()`, which is mathematically equiva
 
 The return z-score measures how extreme today’s return is relative to recent history:
 
-$$ ret\_z_t = \frac{r_t - \mu(r_{t-63:t-1})}{\sigma(r_{t-63:t-1})} $$
+$$ 
+ret\_z_t = \frac{r_t - \mu(r_{t-63:t-1})}{\sigma(r_{t-63:t-1})} $$
 
 Key design decisions:
 
@@ -139,6 +140,7 @@ This makes the feature:
 ## 3. Volume Z-Score (vol_z)
 
 Volume anomalies are detected using the z-score of log(volume):
+
 $$
 vol\_z_t = \frac{\log(V_t) - \mu(\log(V_{t-21:t-1}))}{\sigma(\log(V_{t-21:t-1}))}
 $$
