@@ -1,0 +1,43 @@
+# Byte-code files
+*.pyc
+__pycache__/
+*.mypy_cache/
+*.pytest_cache/
+
+# Virtual environment
+.venv/
+venv/
+env/
+.env/
+# specific to Windows
+venv.bak/
+env.bak/
+
+# built distributions and packaging
+.Python
+build/
+dist/
+wheels/
+*.egg-info/
+
+# Unit test coverage output
+.coverage
+.coverage.*
+
+# PyInstaller
+# log file
+*.log
+# build directory
+build/
+# spec file
+*.spec
+
+# Editors and IDEs
+.idea/  # PyCharm
+.vscode/ # VS Code user settings
+*.swp # vim
+*.sublime-workspace # Sublime Text
+
+# OS generated files
+.DS_Store # macOS
+Thumbs.db # Windows
