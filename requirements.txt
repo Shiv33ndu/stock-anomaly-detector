@@ -1,0 +1,9 @@
+# EDA and cleaning
+pandas
+
+numpy 
+scipy
+matplotlib
+scikit-learn
+
+pytest
