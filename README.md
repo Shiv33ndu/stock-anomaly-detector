@@ -446,6 +446,6 @@ This ensures correctness, reproducibility, and robustness.
 Axis:
 - Y-axis: Number of Dates
 
-![Rule-based vs K-Means anomalies](reports/figures/rule_based_vs_kmeans_anomaly.png)
+[Rule-based vs K-Means anomalies](reports/figures/rule_based_vs_kmeans_anomaly.png)
 
 During the 2020 Q1 stress period, the rule-based detector flagged 43 anomalous days, while the K-Means detector flagged 11 regime-level anomalies. Eight days were identified by both methods, indicating strong agreement on the most severe market stress events.
