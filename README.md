@@ -211,3 +211,123 @@ At the end of Step 2:
 - A compact, interpretable, and leakage-safe feature matrix is available
 - Features are robust across calm and volatile regimes
 - The system is ready for rule-based anomaly detection
+
+---
+
+## Step 3: Rule-Based Anomaly Detection (Interpretable Baseline)
+
+This step implements a simple, fully interpretable rule-based anomaly detector that flags unusual stock-day behavior using the leakage-safe features created in Step 2.
+
+This detector serves as:
+
+- a baseline anomaly system
+- an explainability anchor for later ML-based detectors
+- a sanity check during evaluation and debugging
+
+All rules and thresholds are implemented exactly as specified in the project guidelines.
+
+### Inputs
+
+For each ticker and trading day, the detector consumes the following precomputed features:
+
+| Feature   | Description                     |
+|-----------|---------------------------------|
+| ret       | Daily return (Adj Close–based)  |
+| ret_z     | Z-score of daily return         |
+| vol_z     | Z-score of log(volume)          |
+| range_pct | Intraday range percentile       |
+
+Days with missing feature values (warm-up period) are explicitly ignored.
+
+### Rule Definitions
+
+A stock-day anomaly is flagged if any of the following conditions hold:
+
+- |ret_z| &gt; 2.5
+
+- vol_z &gt; 2.5
+
+- range_pct &gt; 0.95
+
+No learning or tuning is involved at this stage—these rules are intentionally simple and interpretable.
+
+### Anomaly Type Classification
+
+If an anomaly is detected, it is assigned one or more type labels based on the triggering conditions:
+
+| Condition                                      | Type           |
+|------------------------------------------------|----------------|
+| ret &lt; 0 and ($abs(ret_z) \gt 2.5$)                  | crash          |
+| ret &gt; 0 and ($abs(ret_z) \gt 2.5$)                  | spike          |
+| $vol_z \gt 2.5$                               | volume_shock   |
+
+Notes:
+
+- Multiple types can co-exist (e.g., crash + volume_shock)
+- Intraday range (range_pct) contributes to anomaly detection but does not introduce a new type
+
+### Explainability (why Field)
+
+Each anomaly includes a human-readable explanation listing the rule(s) that fired, for example:
+
+|ret_z| &gt; 2.5; vol_z &gt; 2.5
+
+This makes the detector:
+
+- transparent
+- easy to debug
+- suitable for reporting and diagnostics
+
+### Output Schema (Daily Anomaly Card)
+
+The detector outputs one row per anomalous ticker-day with the following schema:
+
+| Column        | Description                     |
+|---------------|---------------------------------|
+| date          | Trading date                    |
+| ticker        | Stock symbol                    |
+| anomaly_flag  | 1 if anomalous                  |
+| type          | Anomaly type(s)                 |
+| ret           | Daily return                    |
+| ret_z         | Return z-score                  |
+| vol_z         | Volume z-score                  |
+| range_pct     | Intraday range percentile       |
+| why           | Triggered rule(s)               |
+
+This structure directly supports downstream aggregation and reporting.
+
+### Warm-Up and Safety Handling
+
+No anomaly is flagged if any required feature is NaN
+
+This prevents false positives during the rolling-window warm-up period
+
+Ensures statistical validity and leakage safety
+
+### Testing & Validation
+
+The rule detector is validated using unit tests with synthetic data, covering:
+
+- crash detection
+- spike detection
+- volume-only anomalies
+- combined anomalies
+- intraday range-only anomalies
+- proper handling of NaN rows
+
+These tests ensure correctness, interpretability, and robustness.
+
+### Design Principles
+
+- Pure function: no mutation of input DataFrames
+- Deterministic behavior
+- Explicit rule logic (no hidden heuristics)
+- Easy extensibility for future detectors
+
+### Outcome
+
+At the end of Step 3:
+
+- A reliable, interpretable anomaly baseline is in place
+- Feature behavior has been validated in real market stress periods
+- The system is ready for unsupervised ML-based anomaly detection
