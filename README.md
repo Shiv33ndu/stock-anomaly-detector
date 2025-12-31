@@ -331,3 +331,121 @@ At the end of Step 3:
 - A reliable, interpretable anomaly baseline is in place
 - Feature behavior has been validated in real market stress periods
 - The system is ready for unsupervised ML-based anomaly detection
+
+---
+
+## Step 4: K-Means–Based Anomaly Detection (Unsupervised)
+
+In this step, we implement an unsupervised anomaly detection method using **K-Means clustering** on behavior-normalized market features.
+
+Unlike the rule-based detector, which relies on fixed thresholds, this approach learns **market behavior regimes directly from data** and flags observations that deviate significantly from these regimes.
+
+---
+
+### Feature Space
+
+Each data point represents one `(ticker, date)` pair and is described by the following features:
+
+- `ret_z` — standardized daily return
+- `vol_z` — standardized log-volume
+- `range_pct` — intraday range percentile
+
+These features are:
+- computed per ticker (rolling statistics)
+- comparable across tickers
+- leakage-safe by construction
+
+---
+
+### Train / Validation / Test Split
+
+To avoid temporal leakage, the data is split strictly by date:
+
+| Split | Period |
+|------|--------|
+| Train | 2018 |
+| Validation | 2019 |
+| Test | 2020 Q1 |
+
+- Feature scaling (StandardScaler) is **fit on training data only**
+- K-Means is trained **only on the training split**
+- Thresholds are derived **only from training distances**
+
+---
+
+### K-Means Training
+
+- Features are standardized using `StandardScaler`
+- K-Means is trained with a fixed number of clusters `k`
+- Each observation is assigned to its nearest cluster centroid
+
+---
+
+### Anomaly Scoring
+
+For each observation:
+- Compute Euclidean distance to the nearest centroid
+- Distance serves as the anomaly score
+
+---
+
+### Cluster-Specific Thresholding
+
+Instead of using a global threshold, we compute **cluster-specific thresholds**:
+
+- For each cluster:
+  - collect distances of training points assigned to that cluster
+  - threshold = 97.5th percentile of those distances
+- An observation is flagged as anomalous if:
+  - distance > threshold[assigned_cluster]
+  - This avoids bias toward dense or sparse clusters.
+
+---
+
+### Output Schema
+
+Each detected anomaly contains:
+
+- `date`
+- `ticker`
+- `anomaly_flag`
+- `cluster`
+- `distance`
+
+This format enables direct comparison with rule-based anomalies and downstream aggregation.
+
+---
+
+### Key Observations
+
+- Anomaly density increases significantly during market stress periods
+- 2020 Q1 shows a clear spike in detected anomalies
+- K-Means captures both:
+- extreme price/volume shocks
+- regime-level behavioral shifts missed by fixed rules
+
+---
+
+### Testing
+
+All major components are unit-tested, including:
+
+- feature scaling
+- K-Means fitting
+- distance computation
+- cluster-specific thresholding
+- anomaly detection logic
+
+This ensures correctness, reproducibility, and robustness.
+
+---
+
+
+### Rule-based vs K-Means Anomaly Dates (2020 Q1)
+
+Axis:
+- Y-axis: Number of Dates
+
+![Rule-based vs K-Means anomalies](reports/figures/rule_based_vs_kmeans_anomaly.png)
+
+During the 2020 Q1 stress period, the rule-based detector flagged 43 anomalous days, while the K-Means detector flagged 11 regime-level anomalies. Eight days were identified by both methods, indicating strong agreement on the most severe market stress events.
