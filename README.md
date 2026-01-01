@@ -462,6 +462,27 @@ This ensures correctness, reproducibility, and robustness.
 
 ---
 
+# Validation Set Flag Rate
+
+On the 2019 validation set, we calibrated the K-Means detector using:
+- ( k = 3 ) (chosen via elbow and silhouette on training data)
+- ( q = 95 ) (percentile threshold tuned on validation).
+
+The resulting ticker-day–level anomaly flag rate is 5.5%, which lies within the 2–8% target range specified in the project guidelines.
+
+Refer to the section `**I: Rule-Based vs K-Means Comparison & Flag Rate (Validation Set)**` in the notebook `notebooks/04_kmeans_analysis.ipynb` for details.
+
+## Numerical Summary (2019 Validation Set):
+
+- Rule-based anomalous dates: 75
+- K-Means anomalous dates: 72
+- Overlapping anomalous dates: 34
+- Total ticker-day points (validation): 1763
+- Anomalous ticker-day points (K-Means): 97
+- Validation flag rate (point-level): 5.5%
+
+
+---
 
 ### Rule-based vs K-Means Anomaly Dates (2020 Q1)
 
