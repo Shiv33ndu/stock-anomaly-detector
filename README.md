@@ -373,10 +373,21 @@ To avoid temporal leakage, the data is split strictly by date:
 
 ---
 
+### Choosing K using Elbow & Silhouette Method
+
+The Elbow and Silhouette methods were used on scaled training X.
+
+* Elbow Method performed on $k \in [2, 8)$
+<p align="center">
+<img src="reports\figures\kmeans_elbow_method.png"/>
+</p>
+
+---
+
 ### K-Means Training
 
 - Features are standardized using `StandardScaler`
-- K-Means is trained with a fixed number of clusters `k`
+- K-Means is trained with a fixed number of clusters `k` chosen using Elbow and Silhouette Method
 - Each observation is assigned to its nearest cluster centroid
 
 ---
@@ -395,7 +406,7 @@ Instead of using a global threshold, we compute **cluster-specific thresholds**:
 
 - For each cluster:
   - collect distances of training points assigned to that cluster
-  - threshold = 97.5th percentile of those distances
+  - threshold = 95th percentile of those distances
 - An observation is flagged as anomalous if:
   - distance > threshold[assigned_cluster]
   - This avoids bias toward dense or sparse clusters.
