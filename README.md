@@ -382,7 +382,7 @@ The Elbow and Silhouette methods were used on scaled training X.
 <img src="reports\figures\kmeans_elbow_method.png"/>
 </p>
 
-* Silhouette Analysis performed on $k \n [2, 8)$
+* Silhouette Analysis performed on $k \in [2, 8)$
 <p align="center">
 <img src="reports\figures\kmeans_silhouette_analysis.png"/>
 </p>
@@ -466,10 +466,10 @@ This ensures correctness, reproducibility, and robustness.
 ### Rule-based vs K-Means Anomaly Dates (2020 Q1)
 
 Axis:
-- Y-axis: Number of Dates
 
+* Y-axis: Number of Dates
 <p align="center">
-  <img src="reports/figures/rule_vs_kmeans_anomaly.png" width="500"/>
+<img src="reports\figures\rule_vs_Kmeans_anomaly.png"/>
 </p>
 
 During the 2020 Q1 stress period, the rule-based detector flagged 43 anomalous days, while the K-Means detector flagged 22 regime-level anomalies. 19 days were identified by both methods, indicating strong agreement on the most severe market stress events.
