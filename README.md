@@ -382,6 +382,17 @@ The Elbow and Silhouette methods were used on scaled training X.
 <img src="reports\figures\kmeans_elbow_method.png"/>
 </p>
 
+* Silhouette Analysis performed on $k \n [2, 8)$
+<p align="center">
+<img src="reports\figures\kmeans_silhouette_analysis.png"/>
+</p>
+
+**Conclusion**
+In Elbow plot, the K=3 is the point from which the inertia value starts plateauing, this kind of stabilization states, any further increment in k value is no good, since too low inertia value will have too densed and higher number of cluster. choosing High value of inertia will lead to less clusters that have point too far from the centroids. k=3 as per the plot seems the sweet spot.
+
+Choosing k=3 decision is further agreed by the silhouette score plot. 
+As k=3 has the highest silhouette score, making it the right choice for our anomaly detection problem.
+
 ---
 
 ### K-Means Training
