@@ -462,7 +462,7 @@ This ensures correctness, reproducibility, and robustness.
 
 ---
 
-# Validation Set Flag Rate
+## Validation Set Flag Rate
 
 On the 2019 validation set, we calibrated the K-Means detector using:
 - ( k = 3 ) (chosen via elbow and silhouette on training data)
@@ -494,3 +494,67 @@ Axis:
 </p>
 
 During the 2020 Q1 stress period, the rule-based detector flagged 43 anomalous days, while the K-Means detector flagged 22 regime-level anomalies. 19 days were identified by both methods, indicating strong agreement on the most severe market stress events.
+
+
+---
+
+# Step 5: DBSCAN (Density-Based Anomaly Detection)
+
+In this step, we implemented a density-based anomaly detector using DBSCAN, providing a complementary perspective to rule-based and K-Means approaches.
+
+## Methodology
+
+- **Features used**: standardized
+  - return z-score (ret_z)
+  - volume z-score (vol_z)
+  - intraday range percentile (range_pct)
+
+- **min_samples**: was set to 7 using the heuristic $2 \times (\text{number of features}) + 1$
+
+- **eps**: was selected as 0.7 based on a k-distance elbow plot on the training set
+
+- **Anomaly Treatment**: Points labeled as noise (\(-1\)) by DBSCAN were treated as anomalies
+
+- **Temporal Ordering**: To respect temporal ordering, DBSCAN was refit on an expanding window:
+  - **Validation (2019)**: trained on training data
+  - **Test (2020 Q1)**: trained on training + validation data
+  - **Labels**: were extracted only for the newly scored period
+
+## Anomaly Rates
+
+| Split          | Point-level anomaly rate |
+|----------------|--------------------------|
+| Training       | 1.59%                    |
+| Validation (2019) | 1.19%                    |
+| Test (2020 Q1)  | 1.84%                    |
+
+DBSCAN produces fewer anomalies than K-Means and rule-based detectors, reflecting its conservative, density-based nature. The increase in anomaly rate during the 2020 Q1 stress period indicates a breakdown of historical density structure.
+
+## Comparison with Other Detectors
+
+- **Rule-based detection**: flags many anomalies due to fixed thresholds, leading to high sensitivity but lower precision.
+- **K-Means detection**: identifies regime-level deviations and achieves a balanced anomaly rate.
+- **DBSCAN detection**: flags only structurally isolated points, producing the lowest anomaly rate but highest confidence anomalies.
+
+Overlap analysis shows that days flagged by all three detectors correspond to extreme market stress events, providing strong consensus signals.
+
+## Comparison Plots with Other Detectors
+
+* #### Anomalous Dates by Detectors (2020 Q1)
+<p>
+<img src="reports\figures\rule_vs_kmeans_vs_dbscan.png" />
+</p>
+
+* #### Daily Anomly Counts by Detectors (2020 Q1)
+<p>
+<img src="reports\figures\daily_anomaly_count.png" />
+</p>
+
+* #### Point-level Flag Rate (2020 Q1)
+<p>
+<img src="reports\figures\flag_rate.png" />
+</p> 
+
+## Key Takeaway
+
+DBSCAN complements K-Means by identifying anomalies that lie outside any dense region of normal behavior. Together, the three detectors provide a multi-perspective view of market anomalies, balancing sensitivity and robustness.
