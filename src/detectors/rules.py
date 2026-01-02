@@ -4,7 +4,6 @@ import pandas as pd
 
 def detect_rule_anomaly(
         df_features: pd.DataFrame,
-        ticker: str,
         ret_z_thresh: float = 2.5,
         vol_z_thresh: float = 2.5,
         range_pct_thresh: float = 0.95
@@ -80,7 +79,7 @@ def detect_rule_anomaly(
         if anomaly_flag == 1:
             anomaly = {
                 'date': row['date'],
-                'ticker': ticker,
+                'ticker': row['ticker'],
                 'anomaly_flag': anomaly_flag,
                 'type': '+ '.join(anomaly_type),
                 'ret': returns.loc[idx],
