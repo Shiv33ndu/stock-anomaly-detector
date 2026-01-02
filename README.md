@@ -558,3 +558,23 @@ Overlap analysis shows that days flagged by all three detectors correspond to ex
 ## Key Takeaway
 
 DBSCAN complements K-Means by identifying anomalies that lie outside any dense region of normal behavior. Together, the three detectors provide a multi-perspective view of market anomalies, balancing sensitivity and robustness.
+
+---
+
+### Hybrid and Consensus Detection (Optional)
+
+We combine K-Means and DBSCAN anomaly signals to form consensus detectors.  
+Two strategies are considered:
+
+- **Union**: flags a point as anomalous if either K-Means or DBSCAN flags it, yielding higher recall.
+- **Intersection**: flags a point as anomalous only if both detectors agree, yielding higher precision.
+
+The union strategy increases sensitivity during stress periods, while the intersection strategy produces a small set of high-confidence anomalies corresponding to structurally isolated regime deviations.
+
+---
+
+### Market-Level Aggregation
+
+We aggregate anomaly signals across tickers to form daily market-level indicators.  
+
+The daily anomaly flag rate captures the fraction of assets exhibiting abnormal behavior and serves as a simple measure of market stress. We also report market return and breadth to contextualize anomaly signals. During the 2020 Q1 period, elevated flag rates coincide with negative market returns and reduced breadth, reflecting systemic stress.
