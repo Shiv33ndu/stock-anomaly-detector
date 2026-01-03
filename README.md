@@ -28,194 +28,6 @@ The system is designed to be:
 - time-aware
 - production-oriented (batch serving + query interface)
 
-## Project Structure
-
-```
-└── 📁stock-anomaly-detector
-    └── 📁data
-        └── 📁processed                         # processed data : features, daily_reports etc..
-        └── 📁raw                               # chosen tickers, a small stock universe
-    └── 📁notebooks
-        ├── 01_eda.ipynb                        # eda and exploratory plots
-        ├── 02_feature_sanity.ipynb             # checking the feature hygienes, leakage, rolling window logic
-        ├── 03_rule_based_analysis.ipynb        # rule base anomaly detection and plot narrative
-        ├── 04_kmeans_analysis.ipynb            # kmeans anomaly detection and comparison with rule_based baseline
-        ├── 05_dbscan_analysis.ipynb            # dbcan expanding window check, anomaly detection & comparison with Kmeans and baseline
-        ├── 06_consensus.ipynb                  # hybrid & consensus, market daily breadth, flag rate
-    └── 📁src                         
-        ├── __main__.py                         # entry point for cmd queries
-        └── 📁cli
-            ├── __init__.py
-            ├── monthly.py                      # monthly report 
-            ├── query.py                        # date query
-            ├── walkforward.py                  # batch process, csv persistence logic
-        └── 📁data
-            ├── load.py                         # ticker data loading, sorting, columns' case consistency  
-            ├── validate.py                     # validation layer 
-            ├── clean_ohlcv.py                  # financial sanity related cleaning
-        └── 📁detectors
-            ├── __init__.py
-            ├── dbscan.py                       # density based unsupervised anomaly detector
-            ├── kmeans.py                       # distance based unsupervised anomaly detector
-            ├── rules.py                        # rule-based anomaly detector
-        └── 📁evaluation
-            ├── __init__.py
-            ├── metrics.py                      # metric related logic
-        └── 📁features
-            ├── __init__.py
-            ├── range.py                        # range_pct feature logic
-            ├── returns.py                      # return, ret_z related feature logic
-            ├── volume.py                       # log(vol) and vol_z related feature logic
-        └── 📁market
-            ├── __init__.py
-            ├── aggregate.py                    # monthly aggregation logic
-        └── 📁reporting
-            ├── __init__.py
-            ├── daily_card.py                   # daily card csv logic
-            ├── monthly_report.py               # monthly report csv logic
-        ├── __init__.py
-    └── 📁tests                                 # test codes 
-        └── 📁fixtures                          # dummy csvs for testing 
-            ├── bad_date.csv
-            ├── bad_ohlc.csv
-            ├── duplicate_dates.csv
-            ├── missing_column.csv
-            ├── negative_volume.csv
-            ├── unsorted_dates.csv
-            ├── valid.csv
-        ├── __init__.py
-        ├── conftest.py
-        ├── test_detectors.py                   
-        ├── test_features.py
-        ├── test_kmeans_detector.py
-        ├── test_load.py
-        └── test_validate.py
-    ├── .gitignore
-    ├── README.md
-    └── requirements.txt
-```
----
-
-# Project Setup & Installation
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/Shiv33ndu/stock-anomaly-detector
-cd stock-anomaly-detector
-```
-
-### 2. Create Virtual Environment (Recommended)
-
-```bash
-python -m venv venv
-```
-Activate:
-* **Windows**
-```bash
-venv\Scripts\activate
-```
-* **Linux / MacOS**
-```bash
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Dataset Preparation
-Download the dataset from Kaggle:
-
-https://www.kaggle.com/datasets/jacksoncrow/stock-market-dataset
-
-Place selected tickers CSVc into:
-```bash
-data/raw/
-```
-
-Example tickers used:
-```bash
-QQQ, AMZN, GOOGL, MSFT, NVDA, TSLA, META
-```
-
----
-
-## How to Run (Quick Start)
-
-The project follows a **batch-then-serve** workflow.
-
-### Step 1: Generate All Final Outputs(walkforward)
-Run the full pipeline and generate serving artifacts
-```bash
-python -m src walkforward
-```
-
-This command:
-* builds final anomaly tables,
-* generates daily and market-level CSVs,
-* materializes all outputs used by query & reporting.
-
-Generated Files:
-```bash
-data/processed/
-├── daily_anomaly_card.csv
-├── market_day_table.csv
-```
-
-### Step 2: Query a Specific Date
-```bash
-python -m src query --date 2020-02-27
-```
-
-Output:
-* market status,
-* anomalous tickers,
-* explanation for each anomaly.
-
-### Step 3: Generate Monthly Mini-Report
-```bash
-python -m src monthly --month 2020-02
-```
-Output:
-
-* abnormal dates,
-* flagged tickers,
-* return & volume statistics,
-* market stress flag.
-
----
-
-## Running Tests 
-Run all unit tests:
-```python
-pytest -s tests/
-```
-Tests include:
-* feature correctness
-* leakage prevention
-* detector sanity checks.
-
----
-
-## Output Produced
-**A. Daily Anomaly Card**
-```pgsql
-date, ticker, anomaly_flag, type, ret, ret_z, vol_z, range_pct, why
-```
-
-**B. Market Day Table**
-```bash
-date, market_ret, breadth, market_anomaly_flag
-```
-
-**C. Query Interface**
-- per-date anomaly lookup
-
-**D. Monthly Mini-Report**
-- summarized anomaly events
-
 ---
 
 # Project Explanation
@@ -745,3 +557,202 @@ The union strategy increases sensitivity during stress periods, while the inters
 We aggregate anomaly signals across tickers to form daily market-level indicators.  
 
 The daily anomaly flag rate captures the fraction of assets exhibiting abnormal behavior and serves as a simple measure of market stress. We also report market return and breadth to contextualize anomaly signals. During the 2020 Q1 period, elevated flag rates coincide with negative market returns and reduced breadth, reflecting systemic stress.
+
+---
+
+## Project Structure
+
+```
+└── 📁stock-anomaly-detector
+    └── 📁data
+        └── 📁processed                         # processed data : features, daily_reports etc..
+        └── 📁raw                               # chosen tickers, a small stock universe
+    └── 📁notebooks
+        ├── 01_eda.ipynb                        # eda and exploratory plots
+        ├── 02_feature_sanity.ipynb             # checking the feature hygienes, leakage, rolling window logic
+        ├── 03_rule_based_analysis.ipynb        # rule base anomaly detection and plot narrative
+        ├── 04_kmeans_analysis.ipynb            # kmeans anomaly detection and comparison with rule_based baseline
+        ├── 05_dbscan_analysis.ipynb            # dbcan expanding window check, anomaly detection & comparison with Kmeans and baseline
+        ├── 06_consensus.ipynb                  # hybrid & consensus, market daily breadth, flag rate
+    └── 📁src                         
+        ├── __main__.py                         # entry point for cmd queries
+        └── 📁cli
+            ├── __init__.py
+            ├── monthly.py                      # monthly report 
+            ├── query.py                        # date query
+            ├── walkforward.py                  # batch process, csv persistence logic
+        └── 📁data
+            ├── load.py                         # ticker data loading, sorting, columns' case consistency  
+            ├── validate.py                     # validation layer 
+            ├── clean_ohlcv.py                  # financial sanity related cleaning
+        └── 📁detectors
+            ├── __init__.py
+            ├── dbscan.py                       # density based unsupervised anomaly detector
+            ├── kmeans.py                       # distance based unsupervised anomaly detector
+            ├── rules.py                        # rule-based anomaly detector
+        └── 📁evaluation
+            ├── __init__.py
+            ├── metrics.py                      # metric related logic
+        └── 📁features
+            ├── __init__.py
+            ├── range.py                        # range_pct feature logic
+            ├── returns.py                      # return, ret_z related feature logic
+            ├── volume.py                       # log(vol) and vol_z related feature logic
+        └── 📁market
+            ├── __init__.py
+            ├── aggregate.py                    # monthly aggregation logic
+        └── 📁reporting
+            ├── __init__.py
+            ├── daily_card.py                   # daily card csv logic
+            ├── monthly_report.py               # monthly report csv logic
+        ├── __init__.py
+    └── 📁tests                                 # test codes 
+        └── 📁fixtures                          # dummy csvs for testing 
+            ├── bad_date.csv
+            ├── bad_ohlc.csv
+            ├── duplicate_dates.csv
+            ├── missing_column.csv
+            ├── negative_volume.csv
+            ├── unsorted_dates.csv
+            ├── valid.csv
+        ├── __init__.py
+        ├── conftest.py
+        ├── test_detectors.py                   
+        ├── test_features.py
+        ├── test_kmeans_detector.py
+        ├── test_load.py
+        └── test_validate.py
+    ├── .gitignore
+    ├── README.md
+    └── requirements.txt
+```
+
+---
+
+# Project Setup & Installation
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Shiv33ndu/stock-anomaly-detector
+cd stock-anomaly-detector
+```
+
+### 2. Create Virtual Environment (Recommended)
+
+```bash
+python -m venv venv
+```
+Activate:
+* **Windows**
+```bash
+venv\Scripts\activate
+```
+* **Linux / MacOS**
+```bash
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Dataset Preparation
+Download the dataset from Kaggle:
+
+https://www.kaggle.com/datasets/jacksoncrow/stock-market-dataset
+
+Place selected tickers CSVc into:
+```bash
+data/raw/
+```
+
+Example tickers used:
+```bash
+QQQ, AMZN, GOOGL, MSFT, NVDA, TSLA, META
+```
+
+---
+
+## How to Run (Quick Start)
+
+The project follows a **batch-then-serve** workflow.
+
+### Step 1: Generate All Final Outputs(walkforward)
+Run the full pipeline and generate serving artifacts
+```bash
+python -m src walkforward
+```
+
+This command:
+* builds final anomaly tables,
+* generates daily and market-level CSVs,
+* materializes all outputs used by query & reporting.
+
+Generated Files:
+```bash
+data/processed/
+├── daily_anomaly_card.csv
+├── market_day_table.csv
+```
+
+### Step 2: Query a Specific Date
+```bash
+python -m src query --date 2020-02-27
+```
+
+Output:
+* market status,
+* anomalous tickers,
+* explanation for each anomaly.
+
+### Step 3: Generate Monthly Mini-Report
+```bash
+python -m src monthly --month 2020-02
+```
+Output:
+
+* abnormal dates,
+* flagged tickers,
+* return & volume statistics,
+* market stress flag.
+
+---
+
+## Running Tests 
+Run all unit tests:
+```python
+pytest -s tests/
+```
+Tests include:
+* feature correctness
+* leakage prevention
+* detector sanity checks.
+
+---
+
+## Output Produced
+**A. Daily Anomaly Card**
+```pgsql
+date, ticker, anomaly_flag, type, ret, ret_z, vol_z, range_pct, why
+```
+
+**B. Market Day Table**
+```bash
+date, market_ret, breadth, market_anomaly_flag
+```
+
+**C. Query Interface**
+- per-date anomaly lookup
+
+**D. Monthly Mini-Report**
+- summarized anomaly events
+
+
+## Key Takeaways
+- Rule-based detectors provide high recall but over-flag.
+- K-Means captures regime-level deviations.
+- DBSCAN isolates structurally abnormal points.
+- Market-level aggregation converts micro anomalies into macro stress signals.
+- Together, these form a robust, interpretable anomaly detection system for financial time series.
