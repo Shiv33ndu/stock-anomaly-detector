@@ -6,4 +6,8 @@ scipy
 matplotlib
 scikit-learn
 
+# for testing
 pytest
+
+# for UI (optional)
+# streamlit
