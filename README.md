@@ -756,3 +756,5 @@ date, market_ret, breadth, market_anomaly_flag
 - DBSCAN isolates structurally abnormal points.
 - Market-level aggregation converts micro anomalies into macro stress signals.
 - Together, these form a robust, interpretable anomaly detection system for financial time series.
+
+---
