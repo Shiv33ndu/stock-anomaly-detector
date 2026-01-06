@@ -718,6 +718,16 @@ Output:
 * return & volume statistics,
 * market stress flag.
 
+
+### Help Command
+```python
+python -m src help
+```
+Output: 
+
+* lists all the available commands
+* with command syntax
+
 ---
 
 ## Running Tests 
