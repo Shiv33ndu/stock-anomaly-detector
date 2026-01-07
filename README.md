@@ -768,3 +768,5 @@ date, market_ret, breadth, market_anomaly_flag
 - Together, these form a robust, interpretable anomaly detection system for financial time series.
 
 ---
+
+## Author 
