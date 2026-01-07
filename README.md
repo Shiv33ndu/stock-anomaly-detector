@@ -771,4 +771,4 @@ date, market_ret, breadth, market_anomaly_flag
 
 ## Author 
 
-Shivendu Kumar | MLE | shivendu.kum@gmail
+Shivendu Kumar | MLE | shivendu.kum@gmail.com
