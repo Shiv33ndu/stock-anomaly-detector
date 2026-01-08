@@ -9,5 +9,5 @@ scikit-learn
 # for testing
 pytest
 
-# for UI (optional)
+# for UI (optional) #
 # streamlit
