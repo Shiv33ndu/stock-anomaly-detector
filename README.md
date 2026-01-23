@@ -257,7 +257,7 @@ This makes the detector:
 - easy to debug
 - suitable for reporting and diagnostics
 
-### Output Schema (Daily Anomaly Card)
+### Output Schema (Daily Anomaly Card) 
 
 The detector outputs one row per anomalous ticker-day with the following schema:
 
