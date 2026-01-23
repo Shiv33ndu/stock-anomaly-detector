@@ -245,7 +245,7 @@ Notes:
 - Multiple types can co-exist (e.g., crash + volume_shock)
 - Intraday range (range_pct) contributes to anomaly detection but does not introduce a new type
 
-### Explainability (why Field)
+### Explainability (why Field) 
 
 Each anomaly includes a human-readable explanation listing the rule(s) that fired, for example:
 
