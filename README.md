@@ -12,7 +12,7 @@ without using labels, news, sentiment, or external information.
 
 The goal is to identify abnormal market behavior, highlight stress periods, and provide explainable anomaly reports at both the stock level and market level.
 
-## 📖 Motivation & Key Ideas
+## 📖 Motivation & Key Ideas 
 
 Financial markets rarely provide labeled “anomaly” data. Instead of supervised learning, this project relies on:
 
