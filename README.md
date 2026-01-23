@@ -275,7 +275,7 @@ The detector outputs one row per anomalous ticker-day with the following schema:
 
 This structure directly supports downstream aggregation and reporting.
 
-### Warm-Up and Safety Handling
+### Warm-Up and Safety Handling 
 
 No anomaly is flagged if any required feature is NaN
 
